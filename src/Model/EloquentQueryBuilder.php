@@ -313,7 +313,7 @@ class EloquentQueryBuilder extends Builder
                     }
 
                     $this
-                        ->translate(null, false)
+                        ->translate()
                         ->orderBy($model->getTranslationsTableName() . '.' . $model->getTitleName(), 'ASC');
                 } elseif ($model->getTitleName() && $model->getTitleName() !== 'id') {
                     $query->orderBy($model->getTitleName(), 'ASC');
@@ -327,7 +327,7 @@ class EloquentQueryBuilder extends Builder
      *
      * @param null $locale
      */
-    public function translate($locale = null, $getAllColumns = true)
+    public function translate($locale = null)
     {
         /* @var EntryModel|EloquentModel $model */
         $model = $this->getModel();
@@ -341,7 +341,7 @@ class EloquentQueryBuilder extends Builder
             );
         }
 
-        if ($getAllColumns){
+        if (!count($this->query->getColumns())) {
             $this->query->addSelect(
                 [$model->getTableName() . '.*'] +
                 array_map(
