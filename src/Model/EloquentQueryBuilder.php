@@ -384,6 +384,48 @@ class EloquentQueryBuilder extends Builder
         return $this;
     }
 
+        /**
+     * @param $columns
+     * @return EloquentQueryBuilder
+     * If there is a select and one of the added columns is a translatable column,
+     * translatable must be added to the query. Because when select is added,
+     * translatable columns are disabled and it is necessary to add it again.
+     */
+    public function select($columns = ['*'])
+    {
+        $model = $this->getModel();
+
+        $translatableColumns = array_diff(
+            $this->getConnection()->getSchemaBuilder()->getColumnListing($model->getTranslationTableName()),
+            [
+                'id',
+                'entry_id',
+                'created_at',
+                'created_by_id',
+                'updated_at',
+                'updated_by_id',
+                'sort_order',
+            ]
+        );
+
+        $translatable = false;
+        foreach ($columns as $column)
+        {
+            if (in_array($column,$translatableColumns))
+            {
+                $translatable = true;
+                break;
+            }
+        }
+
+        if ($translatable)
+        {
+            $this->translate(null,true);
+        }
+
+        return parent::select($columns);
+    }
+
     /**
      * Select the default columns.
      *
