@@ -373,13 +373,9 @@ class EloquentQueryBuilder extends Builder
          * Grab either what matches or null because
          * that should cover every parent record.
          */
-        $this->query->where(
-            function (\Illuminate\Database\Query\Builder $query) use ($model, $locale) {
-                $query->where($model->getTranslationsTableName() . '.locale', $locale ?: config('app.locale'));//active language
-                $query->orWhere($model->getTranslationsTableName() . '.locale',setting_value('streams::default_locale'));//or default setting language
-                $query->orWhere($model->getTranslationsTableName() . '.locale','en');//or default module language
-            }
-        );
+        $locale = $locale ?: config('app.locale', setting_value('streams::default_locale'));
+
+        $this->query->where($model->getTranslationsTableName() . '.locale', $locale);
 
         return $this;
     }
