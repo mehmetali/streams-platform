@@ -393,34 +393,33 @@ class EloquentQueryBuilder extends Builder
      */
     public function select($columns = ['*'])
     {
-        $model = $this->getModel();
+        if (is_array($columns)) {
+            $model = $this->getModel();
 
-        $translatableColumns = array_diff(
-            $this->getConnection()->getSchemaBuilder()->getColumnListing($model->getTranslationTableName()),
-            [
-                'id',
-                'entry_id',
-                'created_at',
-                'created_by_id',
-                'updated_at',
-                'updated_by_id',
-                'sort_order',
-            ]
-        );
+            $translatableColumns = array_diff(
+                $this->getConnection()->getSchemaBuilder()->getColumnListing($model->getTranslationTableName()),
+                [
+                    'id',
+                    'entry_id',
+                    'created_at',
+                    'created_by_id',
+                    'updated_at',
+                    'updated_by_id',
+                    'sort_order',
+                ]
+            );
 
-        $translatable = false;
-        foreach ($columns as $column)
-        {
-            if (in_array($column,$translatableColumns))
-            {
-                $translatable = true;
-                break;
+            $translatable = false;
+            foreach ($columns as $column) {
+                if (in_array($column, $translatableColumns)) {
+                    $translatable = true;
+                    break;
+                }
             }
-        }
 
-        if ($translatable)
-        {
-            $this->translate(null,true);
+            if ($translatable) {
+                $this->translate(null, true);
+            }
         }
 
         return parent::select($columns);
