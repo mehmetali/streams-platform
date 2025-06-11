@@ -11,6 +11,11 @@
             "name": "Vedat Akdogan",
             "email": "vedatakdogan@live.com",
             "role": "Developer"
+        },
+        {
+            "name": "Mehmet Ali",
+            "email": "",
+            "role": "Maintainer"
         }
     ],
     "require": {
